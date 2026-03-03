@@ -1,0 +1,146 @@
+/* Retirement Tracker shortcode styles */
+.rt-dashboard,
+.rt-form-wrap {
+	max-width: 56rem;
+	margin: 0 auto;
+}
+
+.rt-muted {
+	color: #6b7280;
+	font-size: 0.875rem;
+	margin-bottom: 1.5rem;
+}
+
+.rt-grid {
+	display: grid;
+	gap: 1rem;
+	margin-bottom: 2rem;
+}
+
+.rt-grid-2 {
+	grid-template-columns: repeat(2, 1fr);
+}
+
+.rt-grid-3 {
+	grid-template-columns: repeat(3, 1fr);
+}
+
+@media (max-width: 640px) {
+	.rt-grid-2,
+	.rt-grid-3 {
+		grid-template-columns: 1fr;
+	}
+}
+
+.rt-card {
+	border: 1px solid #e5e7eb;
+	border-radius: 1rem;
+	background: #f9fafb;
+	padding: 1rem;
+}
+
+.rt-card-empty {
+	text-align: center;
+	padding: 2rem;
+}
+
+.rt-label {
+	font-size: 0.875rem;
+	color: #6b7280;
+	margin: 0 0 0.25rem 0;
+}
+
+.rt-value {
+	font-size: 1.25rem;
+	font-weight: 600;
+	margin: 0;
+}
+
+.rt-ok {
+	color: #059669;
+}
+
+.rt-fail {
+	color: #dc2626;
+}
+
+.rt-btn {
+	display: inline-block;
+	padding: 0.75rem 1.5rem;
+	border-radius: 0.75rem;
+	font-weight: 500;
+	text-decoration: none;
+	transition: background 0.2s;
+}
+
+.rt-btn-primary {
+	background: #2563eb;
+	color: #fff;
+	border: none;
+}
+
+.rt-btn-primary:hover {
+	background: #1d4ed8;
+	color: #fff;
+}
+
+.rt-btn-secondary {
+	background: transparent;
+	color: #374151;
+	border: 2px solid #e5e7eb;
+}
+
+.rt-btn-secondary:hover {
+	background: #f3f4f6;
+	color: #374151;
+}
+
+.rt-btn-block {
+	display: block;
+	width: 100%;
+	text-align: center;
+	margin-top: 1rem;
+}
+
+.rt-form .rt-section {
+	margin-bottom: 1.5rem;
+	border: 1px solid #e5e7eb;
+	border-radius: 1rem;
+	background: #f9fafb;
+	padding: 1.5rem;
+}
+
+.rt-section-title {
+	font-size: 1.125rem;
+	font-weight: 600;
+	margin: 0 0 1rem 0;
+}
+
+.rt-field {
+	margin-bottom: 0;
+}
+
+.rt-field label {
+	display: block;
+	font-size: 0.875rem;
+	font-weight: 500;
+	color: #6b7280;
+	margin-bottom: 0.25rem;
+}
+
+.rt-field input {
+	width: 100%;
+	padding: 0.5rem 1rem;
+	border: 1px solid #e5e7eb;
+	border-radius: 0.75rem;
+	background: #fff;
+}
+
+.rt-message {
+	margin-bottom: 1rem;
+	padding: 0.5rem 0;
+}
+
+.rt-message.rt-ok {
+	color: #059669;
+}
