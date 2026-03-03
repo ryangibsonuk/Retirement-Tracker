@@ -72,6 +72,8 @@ wp_localize_script( 'chartjs', 'rtAppChartData', array(
 		<?php endif; ?>
 
 		<section class="rt-app-hero">
+			<h2 class="rt-app-section-title"><?php esc_html_e( 'Your retirement at a glance', 'retirement-tracker' ); ?></h2>
+			<p class="rt-app-section-hint"><?php esc_html_e( 'These numbers update when you add or change your pots and goals. Keep them current for accurate projections.', 'retirement-tracker' ); ?></p>
 			<div class="rt-app-hero-grid">
 				<div class="rt-app-hero-card rt-app-hero-primary">
 					<p class="rt-app-hero-label"><?php esc_html_e( 'Total retirement pots today', 'retirement-tracker' ); ?></p>
@@ -108,7 +110,8 @@ wp_localize_script( 'chartjs', 'rtAppChartData', array(
 			$delta_pct = $prev_pot > 0 ? ( $delta / $prev_pot ) * 100 : 0;
 			?>
 			<section class="rt-app-progress">
-				<h2><?php esc_html_e( 'Progress since last update', 'retirement-tracker' ); ?></h2>
+				<h2 class="rt-app-section-title"><?php esc_html_e( 'Progress since last update', 'retirement-tracker' ); ?></h2>
+				<p class="rt-app-section-hint"><?php esc_html_e( 'Compare your projected pot at retirement with your previous update. Growth here reflects your contributions and assumed returns.', 'retirement-tracker' ); ?></p>
 				<div class="rt-app-progress-bar-wrap">
 					<div class="rt-app-progress-bar" style="width: <?php echo esc_attr( min( 100, max( 0, ( $curr_pot / max( 1, $prev_pot * 1.2 ) ) * 100 ) ) ); ?>%;"></div>
 				</div>
@@ -131,6 +134,9 @@ wp_localize_script( 'chartjs', 'rtAppChartData', array(
 		<?php endif; ?>
 
 		<section class="rt-app-charts">
+			<h2 class="rt-app-section-title"><?php esc_html_e( 'Charts', 'retirement-tracker' ); ?></h2>
+			<p class="rt-app-section-hint"><?php esc_html_e( 'Pot growth shows your projected retirement pot over time. Asset allocation shows how your savings are split across cash, ISA, GIA and pensions.', 'retirement-tracker' ); ?></p>
+			<div class="rt-app-charts-grid">
 			<div class="rt-app-chart-card">
 				<h3><?php esc_html_e( 'Pot growth over time', 'retirement-tracker' ); ?></h3>
 				<div class="rt-app-chart-wrap"><canvas id="rt-chart-growth"></canvas></div>
@@ -139,11 +145,13 @@ wp_localize_script( 'chartjs', 'rtAppChartData', array(
 				<h3><?php esc_html_e( 'Asset allocation', 'retirement-tracker' ); ?></h3>
 				<div class="rt-app-chart-wrap rt-app-chart-pie"><canvas id="rt-chart-allocation"></canvas></div>
 			</div>
+			</div>
 		</section>
 
 		<?php if ( ! empty( $suggestions ) ) : ?>
 			<section class="rt-app-suggestions">
-				<h2><?php esc_html_e( 'Insights & suggestions', 'retirement-tracker' ); ?></h2>
+				<h2 class="rt-app-section-title"><?php esc_html_e( 'Insights & suggestions', 'retirement-tracker' ); ?></h2>
+				<p class="rt-app-section-hint"><?php esc_html_e( 'Personalised tips based on your numbers. Update your data regularly for more relevant insights.', 'retirement-tracker' ); ?></p>
 				<div class="rt-app-suggestions-grid">
 					<?php foreach ( $suggestions as $s ) : ?>
 						<div class="rt-app-suggestion rt-app-suggestion-<?php echo esc_attr( $s['type'] ); ?>">
@@ -156,7 +164,8 @@ wp_localize_script( 'chartjs', 'rtAppChartData', array(
 		<?php endif; ?>
 
 		<section class="rt-app-metrics">
-			<h2><?php esc_html_e( 'Key numbers', 'retirement-tracker' ); ?></h2>
+			<h2 class="rt-app-section-title"><?php esc_html_e( 'Key numbers', 'retirement-tracker' ); ?></h2>
+			<p class="rt-app-section-hint"><?php esc_html_e( 'Snapshot at key ages. Pot at 67 includes state pension kick-in; pot at 90 shows longevity risk.', 'retirement-tracker' ); ?></p>
 			<div class="rt-app-metrics-grid">
 				<div class="rt-app-metric"><span class="rt-app-metric-label"><?php esc_html_e( 'Pot at 67', 'retirement-tracker' ); ?></span><span class="rt-app-metric-value"><?php echo esc_html( RT_Shortcodes::format_money_static( $summary['potAt67'] ?? 0 ) ); ?></span></div>
 				<div class="rt-app-metric"><span class="rt-app-metric-label"><?php esc_html_e( 'Pot at 90', 'retirement-tracker' ); ?></span><span class="rt-app-metric-value"><?php echo esc_html( RT_Shortcodes::format_money_static( $summary['potAt90'] ?? 0 ) ); ?></span></div>
@@ -166,6 +175,7 @@ wp_localize_script( 'chartjs', 'rtAppChartData', array(
 		</section>
 
 		<section class="rt-app-reminder">
+			<h2 class="rt-app-section-title"><?php esc_html_e( 'Stay on track', 'retirement-tracker' ); ?></h2>
 			<div class="rt-app-reminder-card">
 				<span class="rt-app-reminder-icon">📅</span>
 				<div>

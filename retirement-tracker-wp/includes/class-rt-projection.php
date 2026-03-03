@@ -28,6 +28,9 @@ class RT_Projection {
 
 		$state_age   = (int) ( $input['statePensionAge'] ?? 67 );
 		$state_ann   = self::clamp( (float) ( $input['statePensionAnnual'] ?? 0 ) );
+		$db_ann      = self::clamp( (float) ( $input['dbPensionAnnual'] ?? 0 ) );
+		$db_age      = (int) ( $input['dbPensionAge'] ?? 65 );
+		$btl_ann     = self::clamp( (float) ( $input['btlAnnual'] ?? 0 ) );
 		$spending    = self::clamp( (float) ( $input['annualSpending'] ?? 30000 ) );
 
 		$years     = array();
@@ -47,7 +50,10 @@ class RT_Projection {
 			$shortfall  = 0;
 
 			if ( $age >= $ret ) {
-				$income = $age >= $state_age ? $state_ann : 0;
+				$income = 0;
+				if ( $age >= $state_age ) $income += $state_ann;
+				if ( $age >= $db_age ) $income += $db_ann;
+				$income += $btl_ann; // BTL from retirement
 				$need   = max( 0, $spending - $income );
 
 				if ( $need > 0 ) {

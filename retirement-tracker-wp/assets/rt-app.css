@@ -20,9 +20,9 @@
 }
 
 .rt-app-header-inner {
-	max-width: 72rem;
+	max-width: 1400px;
 	margin: 0 auto;
-	padding: 0 1.5rem;
+	padding: 0 2rem;
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
@@ -77,13 +77,28 @@
 }
 
 .rt-app-main {
-	max-width: 72rem;
+	max-width: 1400px;
 	margin: 0 auto;
-	padding: 2rem 1.5rem;
+	padding: 2rem 2rem;
+}
+
+.rt-app-section-title {
+	font-size: 1.375rem;
+	font-weight: 700;
+	color: var(--rt-text);
+	margin: 0 0 1rem 0;
+	letter-spacing: -0.02em;
+}
+
+.rt-app-section-hint {
+	font-size: 0.875rem;
+	color: var(--rt-muted);
+	margin: -0.5rem 0 1rem 0;
+	line-height: 1.5;
 }
 
 .rt-app-hero {
-	margin-bottom: 2rem;
+	margin-bottom: 2.5rem;
 }
 
 .rt-app-hero-grid {
@@ -182,10 +197,13 @@
 }
 
 .rt-app-charts {
+	margin-bottom: 2rem;
+}
+
+.rt-app-charts-grid {
 	display: grid;
 	grid-template-columns: 1fr 1fr;
 	gap: 1.5rem;
-	margin-bottom: 2rem;
 }
 
 @media (max-width: 768px) {
@@ -217,9 +235,16 @@
 	margin-bottom: 2rem;
 }
 
-.rt-app-suggestions h2 {
-	font-size: 1.25rem;
-	margin: 0 0 1rem 0;
+.rt-app-suggestions h2,
+.rt-app-metrics h2 {
+	font-size: 1.375rem;
+	font-weight: 700;
+	margin: 0 0 0.5rem 0;
+}
+
+.rt-app-suggestions .rt-app-section-hint,
+.rt-app-metrics .rt-app-section-hint {
+	margin-bottom: 1rem;
 }
 
 .rt-app-suggestions-grid {
@@ -327,8 +352,9 @@
 }
 
 .rt-app-landing-inner {
-	max-width: 36rem;
+	max-width: 560px;
 	text-align: center;
+	margin: 0 auto;
 }
 
 .rt-app-landing h1 {

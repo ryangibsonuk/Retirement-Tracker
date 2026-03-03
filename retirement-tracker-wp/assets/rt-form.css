@@ -1,0 +1,190 @@
+/* Retirement Tracker Form - block-based builder */
+
+.rt-form-app {
+	max-width: 1400px;
+	margin: 0 auto;
+	font-family: system-ui, -apple-system, sans-serif;
+}
+
+.rt-form-header {
+	background: #fff;
+	border-bottom: 1px solid #e2e8f0;
+	padding: 2rem;
+	margin-bottom: 2rem;
+}
+
+.rt-form-header-inner {
+	max-width: 1400px;
+	margin: 0 auto;
+}
+
+.rt-form-back {
+	display: inline-block;
+	color: #64748b;
+	font-size: 0.875rem;
+	margin-bottom: 1rem;
+}
+
+.rt-form-back:hover {
+	color: #2563eb;
+}
+
+.rt-form-header h1 {
+	font-size: 1.75rem;
+	font-weight: 700;
+	margin: 0 0 0.5rem 0;
+}
+
+.rt-form-lead {
+	font-size: 1rem;
+	color: #64748b;
+	margin: 0;
+	line-height: 1.5;
+}
+
+.rt-form-main {
+	padding: 0 2rem 3rem;
+}
+
+.rt-form-message {
+	margin-bottom: 1.5rem;
+	padding: 1rem;
+	border-radius: 0.5rem;
+}
+
+.rt-form-section {
+	margin-bottom: 2.5rem;
+}
+
+.rt-form-section-title {
+	font-size: 1.25rem;
+	font-weight: 700;
+	margin: 0 0 0.5rem 0;
+}
+
+.rt-form-hint {
+	font-size: 0.875rem;
+	color: #64748b;
+	margin: 0 0 1.25rem 0;
+	line-height: 1.5;
+}
+
+.rt-form-row {
+	display: grid;
+	gap: 1rem;
+}
+
+.rt-form-row-3 {
+	grid-template-columns: repeat(3, 1fr);
+}
+
+@media (max-width: 768px) {
+	.rt-form-row-3 { grid-template-columns: 1fr; }
+}
+
+.rt-form-field label {
+	display: block;
+	font-size: 0.875rem;
+	font-weight: 500;
+	color: #374151;
+	margin-bottom: 0.375rem;
+}
+
+.rt-form-field input {
+	width: 100%;
+	padding: 0.625rem 1rem;
+	border: 1px solid #e2e8f0;
+	border-radius: 0.5rem;
+	font-size: 1rem;
+}
+
+.rt-form-blocks {
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+}
+
+.rt-form-block {
+	display: flex;
+	background: #fff;
+	border: 1px solid #e2e8f0;
+	border-radius: 1rem;
+	overflow: hidden;
+	box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.rt-form-block-handle {
+	cursor: grab;
+	background: #f8fafc;
+	padding: 1.25rem 0.75rem;
+	display: flex;
+	align-items: center;
+	color: #94a3b8;
+	font-size: 0.875rem;
+}
+
+.rt-form-block-handle:active {
+	cursor: grabbing;
+}
+
+.rt-form-block-body {
+	flex: 1;
+	padding: 1.25rem 1.5rem;
+}
+
+.rt-form-block-header {
+	display: flex;
+	align-items: flex-start;
+	gap: 1rem;
+	margin-bottom: 1rem;
+}
+
+.rt-form-block-icon {
+	font-size: 1.5rem;
+}
+
+.rt-form-block-header h3 {
+	font-size: 1rem;
+	font-weight: 600;
+	margin: 0 0 0.25rem 0;
+}
+
+.rt-form-block-hint {
+	font-size: 0.8125rem;
+	color: #64748b;
+	margin: 0;
+}
+
+.rt-form-block-fields {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 1rem;
+}
+
+.rt-form-block-fields .rt-form-field {
+	min-width: 140px;
+}
+
+.rt-form-suffix {
+	font-size: 0.8125rem;
+	color: #64748b;
+}
+
+.rt-form-submit {
+	display: block;
+	width: 100%;
+	max-width: 400px;
+	margin: 2rem auto 0;
+	padding: 1rem 1.5rem;
+	background: #2563eb;
+	color: #fff;
+	border: none;
+	border-radius: 0.75rem;
+	font-size: 1.0625rem;
+	font-weight: 600;
+	cursor: pointer;
+}
+
+.rt-form-submit:hover {
+	background: #1d4ed8;
+}
