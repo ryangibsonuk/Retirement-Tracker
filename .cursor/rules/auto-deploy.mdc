@@ -1,0 +1,16 @@
+---
+description: Auto-commit and push after code changes
+alwaysApply: true
+---
+
+# Auto-deploy after changes
+
+After making any code changes (edits, new files, fixes), run these commands to commit and push:
+
+```powershell
+git add .
+git commit -m "Brief description of the change"
+git push origin main
+```
+
+Use a clear, concise commit message describing what was changed. Do this as the final step after edits, unless the user asks not to.
