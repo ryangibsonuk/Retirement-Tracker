@@ -10,6 +10,7 @@ class RT_Shortcodes {
 	public static function register() {
 		add_shortcode( 'retirement_tracker_dashboard', array( __CLASS__, 'dashboard' ) );
 		add_shortcode( 'retirement_tracker_form', array( __CLASS__, 'form' ) );
+		add_shortcode( 'retirement_tracker_app', array( __CLASS__, 'app' ) );
 	}
 
 	public static function get_form_url() {
@@ -293,6 +294,135 @@ class RT_Shortcodes {
 		";
 	}
 
+	/**
+	 * App: full online dashboard. Login → enter details → see progress, charts, suggestions. Monthly reminders.
+	 * [retirement_tracker_app] or [retirement_tracker_app dummy="1"] for demo.
+	 */
+	public static function app( $atts ) {
+		$atts  = shortcode_atts( array( 'dummy' => '0' ), $atts, 'retirement_tracker_app' );
+		$dummy = $atts['dummy'] === '1' || $atts['dummy'] === 'yes' || isset( $_GET['rt_dummy'] );
+
+		if ( ! is_user_logged_in() && ! $dummy ) {
+			return self::app_landing();
+		}
+
+		if ( $dummy ) {
+			$dummy_inputs = array(
+				'currentAge'        => 44,
+				'retirementAge'     => 58,
+				'lifeHorizon'       => 95,
+				'cash'              => 42000,
+				'isa'               => 185000,
+				'gia'               => 38000,
+				'pensionPot'         => 312000,
+				'statePensionAge'    => 67,
+				'statePensionAnnual' => 11500,
+				'annualSpending'     => 38000,
+				'realReturnPct'      => 0.042,
+				'realReturnCashPct'  => 0.012,
+			);
+			$result  = RT_Projection::run( $dummy_inputs );
+			$inputs  = $dummy_inputs;
+			$summary = $result['summary'];
+			$years   = $result['years'];
+			$updated = null;
+			$history = self::dummy_history( $dummy_inputs );
+			$prev_summary = count( $history ) >= 2 ? $history[ count( $history ) - 2 ]['summary'] : null;
+			$suggestions  = RT_Suggestions::get( $inputs, $summary, $prev_summary );
+		} else {
+			$scenario = RT_DB::get_scenario();
+			if ( ! $scenario || empty( $scenario['summary'] ) ) {
+				return self::app_empty();
+			}
+			$inputs   = $scenario['inputs'];
+			$summary  = $scenario['summary'];
+			$updated  = $scenario['updated_at'] ?? null;
+			$result   = RT_Projection::run( $inputs );
+			$years    = $result['years'];
+			$history  = RT_DB::get_scenario_history( get_current_user_id(), 24 );
+			$prev_summary = count( $history ) >= 2 ? $history[ count( $history ) - 2 ]['summary'] : null;
+			$suggestions  = RT_Suggestions::get( $inputs, $summary, $prev_summary );
+		}
+
+		ob_start();
+		include __DIR__ . '/app-view.php';
+		return ob_get_clean();
+	}
+
+	private static function app_landing() {
+		$login_url = wp_login_url( self::get_dashboard_url() !== '#' ? self::get_dashboard_url() : get_permalink() );
+		$signup_url = wp_registration_url();
+		ob_start();
+		?>
+		<div class="rt-app-landing">
+			<div class="rt-app-landing-inner">
+				<h1><?php esc_html_e( 'Your retirement, one place', 'retirement-tracker' ); ?></h1>
+				<p class="rt-app-landing-lead">
+					<?php esc_html_e( 'Log in to your dashboard. Enter your pots, spending and goals. We show your progress, charts and suggestions. Update monthly — we\'ll remind you.', 'retirement-tracker' ); ?>
+				</p>
+				<div class="rt-app-landing-actions">
+					<a href="<?php echo esc_url( $login_url ); ?>" class="rt-btn rt-btn-primary rt-btn-lg"><?php esc_html_e( 'Log in to your dashboard', 'retirement-tracker' ); ?></a>
+					<?php if ( get_option( 'users_can_register' ) ) : ?>
+						<a href="<?php echo esc_url( $signup_url ); ?>" class="rt-btn rt-btn-secondary rt-btn-lg"><?php esc_html_e( 'Sign up', 'retirement-tracker' ); ?></a>
+					<?php endif; ?>
+				</div>
+				<p class="rt-app-landing-demo">
+					<a href="<?php echo esc_url( add_query_arg( 'rt_dummy', '1', get_permalink() ) ); ?>"><?php esc_html_e( 'View demo with sample data →', 'retirement-tracker' ); ?></a>
+				</p>
+			</div>
+		</div>
+		<?php
+		return ob_get_clean();
+	}
+
+	private static function app_empty() {
+		ob_start();
+		?>
+		<div class="rt-app rt-app-empty">
+			<header class="rt-app-header">
+				<div class="rt-app-header-inner">
+					<span class="rt-app-logo">Retirement Tracker</span>
+				</div>
+			</header>
+			<main class="rt-app-main">
+				<div class="rt-app-empty-card">
+					<h2><?php esc_html_e( "You haven't entered your numbers yet", 'retirement-tracker' ); ?></h2>
+					<p><?php esc_html_e( 'Add your pots, spending and retirement age. We\'ll show your progress, charts and suggestions.', 'retirement-tracker' ); ?></p>
+					<a href="<?php echo esc_url( self::get_form_url() ); ?>" class="rt-btn rt-btn-primary rt-btn-lg"><?php esc_html_e( 'Add my numbers', 'retirement-tracker' ); ?></a>
+				</div>
+			</main>
+		</div>
+		<?php
+		return ob_get_clean();
+	}
+
+	/** Generate 12 months of fake history for dummy mode */
+	private static function dummy_history( array $base_inputs ) {
+		$history = array();
+		$r_inv  = (float) ( $base_inputs['realReturnPct'] ?? 0.04 );
+		$r_cash = (float) ( $base_inputs['realReturnCashPct'] ?? 0.01 );
+		$cash   = (float) ( $base_inputs['cash'] ?? 0 );
+		$isa    = (float) ( $base_inputs['isa'] ?? 0 );
+		$gia    = (float) ( $base_inputs['gia'] ?? 0 );
+		$pension = (float) ( $base_inputs['pensionPot'] ?? 0 );
+		for ( $i = 11; $i >= 0; $i-- ) {
+			$d = new DateTime( "-$i months" );
+			$m = 1 / 12;
+			$cash   *= pow( 1 + $r_cash, $m );
+			$isa    *= pow( 1 + $r_inv, $m );
+			$gia    *= pow( 1 + $r_inv, $m );
+			$pension *= pow( 1 + $r_inv, $m );
+			$inputs = array_merge( $base_inputs, array( 'cash' => $cash, 'isa' => $isa, 'gia' => $gia, 'pensionPot' => $pension ) );
+			$result = RT_Projection::run( $inputs );
+			$history[] = array(
+				'inputs'    => $inputs,
+				'summary'   => $result['summary'],
+				'created_at' => $d->format( 'Y-m-d H:i:s' ),
+			);
+		}
+		return $history;
+	}
+
 	public static function form( $atts ) {
 		if ( ! is_user_logged_in() ) {
 			return '<p>' . __( 'Please log in to update your retirement numbers.', 'retirement-tracker' ) . '</p>';
@@ -434,8 +564,12 @@ class RT_Shortcodes {
 		return ob_get_clean();
 	}
 
-	private static function format_money( $n ) {
+	public static function format_money_static( $n ) {
 		return '£' . number_format( (float) $n, 0 );
+	}
+
+	private static function format_money( $n ) {
+		return self::format_money_static( $n );
 	}
 
 	private static function parse_money( $s ) {

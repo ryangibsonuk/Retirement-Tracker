@@ -16,12 +16,17 @@ const RT_PLUGIN_SLUG = 'retirement-tracker';
 
 require_once RT_PLUGIN_DIR . '/includes/class-rt-projection.php';
 require_once RT_PLUGIN_DIR . '/includes/class-rt-db.php';
+require_once RT_PLUGIN_DIR . '/includes/class-rt-suggestions.php';
 require_once RT_PLUGIN_DIR . '/shortcodes/class-rt-shortcodes.php';
 
 register_activation_hook( __FILE__, array( 'RT_DB', 'install' ) );
 
 add_action( 'init', function () {
 	RT_Shortcodes::register();
+	if ( get_option( 'rt_db_version', 0 ) < 2 ) {
+		RT_DB::install();
+		update_option( 'rt_db_version', 2 );
+	}
 } );
 
 add_action( 'wp_scheduled_rt_nudge', array( 'RT_DB', 'cron_nudge' ) );
@@ -103,10 +108,10 @@ function rt_render_options_page() {
 		<hr />
 		<h2><?php esc_html_e( 'Shortcodes', 'retirement-tracker' ); ?></h2>
 		<ul>
-			<li><code>[retirement_tracker_dashboard]</code> — <?php esc_html_e( 'Simple summary (pot at ret, 67, 90, sustainability).', 'retirement-tracker' ); ?></li>
-			<li><code>[retirement_tracker_dashboard mode="full"]</code> — <?php esc_html_e( 'Full dashboard with drag-and-drop widgets, all inputs/outputs, year-by-year table.', 'retirement-tracker' ); ?></li>
-			<li><code>[retirement_tracker_dashboard mode="full" dummy="1"]</code> — <?php esc_html_e( 'Full dashboard with sample data (for demo/feedback).', 'retirement-tracker' ); ?></li>
-			<li><code>[retirement_tracker_form]</code> — <?php esc_html_e( 'Update my numbers form.', 'retirement-tracker' ); ?></li>
+			<li><strong><code>[retirement_tracker_app]</code></strong> — <?php esc_html_e( 'Main app: landing (log in / sign up) when logged out; full dashboard (charts, progress, suggestions) when logged in. Add ?rt_dummy=1 for demo.', 'retirement-tracker' ); ?></li>
+			<li><code>[retirement_tracker_dashboard]</code> — <?php esc_html_e( 'Simple summary.', 'retirement-tracker' ); ?></li>
+			<li><code>[retirement_tracker_dashboard mode="full"]</code> — <?php esc_html_e( 'Drag-and-drop widgets.', 'retirement-tracker' ); ?></li>
+			<li><code>[retirement_tracker_form]</code> — <?php esc_html_e( 'Update my numbers form (requires login).', 'retirement-tracker' ); ?></li>
 		</ul>
 		<p><?php esc_html_e( 'Create a page for the dashboard and one for the form (or combine). Protect with “logged in only” or a membership plugin if needed.', 'retirement-tracker' ); ?></p>
 		<p><?php esc_html_e( 'Monthly nudge runs via WP-Cron (scheduled on plugin activation). Unsubscribe link: add ?retirement_tracker_nudge_unsubscribe=1 to any URL when logged in.', 'retirement-tracker' ); ?></p>

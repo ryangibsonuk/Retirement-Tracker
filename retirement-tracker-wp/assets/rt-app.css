@@ -1,0 +1,383 @@
+/* Retirement Tracker App - SaaS-style dashboard */
+
+.rt-app {
+	--rt-primary: #2563eb;
+	--rt-primary-hover: #1d4ed8;
+	--rt-bg: #f8fafc;
+	--rt-card: #fff;
+	--rt-border: #e2e8f0;
+	--rt-text: #1e293b;
+	--rt-muted: #64748b;
+	min-height: 100vh;
+	background: var(--rt-bg);
+	font-family: system-ui, -apple-system, sans-serif;
+}
+
+.rt-app-header {
+	background: var(--rt-card);
+	border-bottom: 1px solid var(--rt-border);
+	padding: 1rem 0;
+}
+
+.rt-app-header-inner {
+	max-width: 72rem;
+	margin: 0 auto;
+	padding: 0 1.5rem;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	gap: 1rem;
+}
+
+.rt-app-logo {
+	font-weight: 700;
+	font-size: 1.25rem;
+	color: var(--rt-text);
+}
+
+.rt-app-nav {
+	display: flex;
+	align-items: center;
+	gap: 1rem;
+}
+
+.rt-app-user {
+	font-size: 0.875rem;
+	color: var(--rt-muted);
+}
+
+.rt-app-badge {
+	font-size: 0.75rem;
+	background: #fef3c7;
+	color: #92400e;
+	padding: 0.25rem 0.5rem;
+	border-radius: 0.25rem;
+}
+
+.rt-btn-sm {
+	padding: 0.5rem 1rem;
+	font-size: 0.875rem;
+}
+
+.rt-btn-lg {
+	padding: 0.875rem 1.75rem;
+	font-size: 1.125rem;
+}
+
+.rt-btn-ghost {
+	background: transparent;
+	color: var(--rt-muted);
+	border: none;
+}
+
+.rt-btn-ghost:hover {
+	background: #f1f5f9;
+	color: var(--rt-text);
+}
+
+.rt-app-main {
+	max-width: 72rem;
+	margin: 0 auto;
+	padding: 2rem 1.5rem;
+}
+
+.rt-app-hero {
+	margin-bottom: 2rem;
+}
+
+.rt-app-hero-grid {
+	display: grid;
+	grid-template-columns: 2fr repeat(3, 1fr);
+	gap: 1rem;
+}
+
+@media (max-width: 768px) {
+	.rt-app-hero-grid {
+		grid-template-columns: 1fr 1fr;
+	}
+}
+
+@media (max-width: 480px) {
+	.rt-app-hero-grid {
+		grid-template-columns: 1fr;
+	}
+}
+
+.rt-app-hero-card {
+	background: var(--rt-card);
+	border-radius: 1rem;
+	padding: 1.5rem;
+	border: 1px solid var(--rt-border);
+	box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.rt-app-hero-primary {
+	border-left: 4px solid var(--rt-primary);
+}
+
+.rt-app-hero-label {
+	font-size: 0.875rem;
+	color: var(--rt-muted);
+	margin: 0 0 0.5rem 0;
+}
+
+.rt-app-hero-value {
+	font-size: 1.75rem;
+	font-weight: 700;
+	color: var(--rt-text);
+	margin: 0;
+}
+
+.rt-app-status-ok .rt-app-hero-value { color: #059669; }
+.rt-app-status-warn .rt-app-hero-value { color: #dc2626; }
+
+.rt-app-alert {
+	padding: 1rem 1.5rem;
+	border-radius: 0.5rem;
+	margin-bottom: 1.5rem;
+}
+
+.rt-app-alert-success {
+	background: #d1fae5;
+	color: #065f46;
+}
+
+.rt-app-progress {
+	background: var(--rt-card);
+	border-radius: 1rem;
+	padding: 1.5rem;
+	margin-bottom: 2rem;
+	border: 1px solid var(--rt-border);
+}
+
+.rt-app-progress h2 {
+	font-size: 1rem;
+	margin: 0 0 1rem 0;
+}
+
+.rt-app-progress-bar-wrap {
+	height: 8px;
+	background: #e2e8f0;
+	border-radius: 4px;
+	overflow: hidden;
+	margin-bottom: 0.75rem;
+}
+
+.rt-app-progress-bar {
+	height: 100%;
+	background: var(--rt-primary);
+	transition: width 0.3s;
+}
+
+.rt-app-progress-text {
+	font-size: 0.875rem;
+	color: var(--rt-muted);
+	margin: 0;
+}
+
+.rt-app-charts {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 1.5rem;
+	margin-bottom: 2rem;
+}
+
+@media (max-width: 768px) {
+	.rt-app-charts { grid-template-columns: 1fr; }
+}
+
+.rt-app-chart-card {
+	background: var(--rt-card);
+	border-radius: 1rem;
+	padding: 1.5rem;
+	border: 1px solid var(--rt-border);
+}
+
+.rt-app-chart-card h3 {
+	font-size: 1rem;
+	margin: 0 0 1rem 0;
+}
+
+.rt-app-chart-wrap {
+	position: relative;
+	height: 240px;
+}
+
+.rt-app-chart-pie {
+	height: 200px;
+}
+
+.rt-app-suggestions {
+	margin-bottom: 2rem;
+}
+
+.rt-app-suggestions h2 {
+	font-size: 1.25rem;
+	margin: 0 0 1rem 0;
+}
+
+.rt-app-suggestions-grid {
+	display: grid;
+	gap: 1rem;
+}
+
+.rt-app-suggestion {
+	padding: 1rem 1.25rem;
+	border-radius: 0.75rem;
+	border-left: 4px solid;
+}
+
+.rt-app-suggestion-success { background: #ecfdf5; border-color: #059669; }
+.rt-app-suggestion-info { background: #eff6ff; border-color: #2563eb; }
+.rt-app-suggestion-warning { background: #fffbeb; border-color: #f59e0b; }
+
+.rt-app-suggestion h4 {
+	margin: 0 0 0.25rem 0;
+	font-size: 0.9375rem;
+}
+
+.rt-app-suggestion p {
+	margin: 0;
+	font-size: 0.875rem;
+	color: var(--rt-muted);
+}
+
+.rt-app-metrics {
+	margin-bottom: 2rem;
+}
+
+.rt-app-metrics h2 {
+	font-size: 1.25rem;
+	margin: 0 0 1rem 0;
+}
+
+.rt-app-metrics-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+	gap: 1rem;
+}
+
+.rt-app-metric {
+	background: var(--rt-card);
+	border-radius: 0.75rem;
+	padding: 1rem;
+	border: 1px solid var(--rt-border);
+}
+
+.rt-app-metric-label {
+	display: block;
+	font-size: 0.75rem;
+	color: var(--rt-muted);
+	margin-bottom: 0.25rem;
+}
+
+.rt-app-metric-value {
+	font-size: 1.125rem;
+	font-weight: 600;
+}
+
+.rt-app-reminder {
+	margin-bottom: 2rem;
+}
+
+.rt-app-reminder-card {
+	display: flex;
+	align-items: flex-start;
+	gap: 1rem;
+	background: #eff6ff;
+	border: 1px solid #bfdbfe;
+	border-radius: 1rem;
+	padding: 1.25rem;
+}
+
+.rt-app-reminder-icon {
+	font-size: 1.5rem;
+}
+
+.rt-app-reminder-card h4 {
+	margin: 0 0 0.25rem 0;
+	font-size: 1rem;
+}
+
+.rt-app-reminder-card p {
+	margin: 0;
+	font-size: 0.875rem;
+	color: var(--rt-muted);
+}
+
+.rt-app-updated {
+	font-size: 0.8125rem;
+	color: var(--rt-muted);
+	margin: 0;
+}
+
+/* Landing */
+.rt-app-landing {
+	min-height: 60vh;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 3rem 1.5rem;
+}
+
+.rt-app-landing-inner {
+	max-width: 36rem;
+	text-align: center;
+}
+
+.rt-app-landing h1 {
+	font-size: 2rem;
+	margin: 0 0 1rem 0;
+}
+
+.rt-app-landing-lead {
+	font-size: 1.125rem;
+	color: var(--rt-muted);
+	margin: 0 0 2rem 0;
+	line-height: 1.6;
+}
+
+.rt-app-landing-actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 1rem;
+	justify-content: center;
+	margin-bottom: 2rem;
+}
+
+.rt-app-landing-demo a {
+	font-size: 0.9375rem;
+	color: var(--rt-primary);
+}
+
+.rt-app-landing-demo a:hover {
+	text-decoration: underline;
+}
+
+/* Empty state */
+.rt-app-empty .rt-app-main {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 50vh;
+}
+
+.rt-app-empty-card {
+	text-align: center;
+	background: var(--rt-card);
+	border-radius: 1rem;
+	padding: 2rem;
+	border: 1px solid var(--rt-border);
+	max-width: 28rem;
+}
+
+.rt-app-empty-card h2 {
+	font-size: 1.25rem;
+	margin: 0 0 0.5rem 0;
+}
+
+.rt-app-empty-card p {
+	color: var(--rt-muted);
+	margin: 0 0 1.5rem 0;
+}

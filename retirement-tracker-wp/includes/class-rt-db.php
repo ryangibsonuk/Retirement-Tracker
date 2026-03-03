@@ -7,14 +7,16 @@ defined( 'ABSPATH' ) || exit;
 
 class RT_DB {
 
-	const TABLE_SCENARIOS  = 'retirement_scenarios';
+	const TABLE_SCENARIOS   = 'retirement_scenarios';
+	const TABLE_SCENARIO_HISTORY = 'retirement_scenario_history';
 	const TABLE_NUDGE_PREFS = 'retirement_nudge_prefs';
 
 	public static function install() {
 		global $wpdb;
 		$scenarios = $wpdb->prefix . self::TABLE_SCENARIOS;
+		$history   = $wpdb->prefix . self::TABLE_SCENARIO_HISTORY;
 		$nudge     = $wpdb->prefix . self::TABLE_NUDGE_PREFS;
-		$charset  = $wpdb->get_charset_collate();
+		$charset   = $wpdb->get_charset_collate();
 
 		$sql = "CREATE TABLE IF NOT EXISTS $scenarios (
 			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -24,6 +26,16 @@ class RT_DB {
 			updated_at datetime NOT NULL,
 			PRIMARY KEY (id),
 			UNIQUE KEY user_id (user_id)
+		) $charset;
+
+		CREATE TABLE IF NOT EXISTS $history (
+			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+			user_id bigint(20) unsigned NOT NULL,
+			inputs longtext NOT NULL,
+			summary longtext NOT NULL,
+			created_at datetime NOT NULL,
+			PRIMARY KEY (id),
+			KEY user_created (user_id, created_at)
 		) $charset;
 
 		CREATE TABLE IF NOT EXISTS $nudge (
@@ -87,7 +99,36 @@ class RT_DB {
 			),
 			array( '%d', '%s', '%s', '%s' )
 		);
+		self::add_scenario_history( $user_id, $inputs, $summary );
 		return $summary;
+	}
+
+	/** Store snapshot for progress tracking */
+	public static function add_scenario_history( $user_id, array $inputs, array $summary ) {
+		global $wpdb;
+		$table = $wpdb->prefix . self::TABLE_SCENARIO_HISTORY;
+		$wpdb->insert( $table, array(
+			'user_id'    => $user_id,
+			'inputs'     => wp_json_encode( $inputs ),
+			'summary'    => wp_json_encode( $summary ),
+			'created_at' => current_time( 'mysql' ),
+		), array( '%d', '%s', '%s', '%s' ) );
+	}
+
+	/** Get last N history snapshots for charts / monthly progress */
+	public static function get_scenario_history( $user_id, $limit = 24 ) {
+		global $wpdb;
+		$table = $wpdb->prefix . self::TABLE_SCENARIO_HISTORY;
+		$rows  = $wpdb->get_results( $wpdb->prepare(
+			"SELECT inputs, summary, created_at FROM $table WHERE user_id = %d ORDER BY created_at ASC LIMIT %d",
+			$user_id,
+			$limit
+		), ARRAY_A );
+		foreach ( $rows as &$r ) {
+			$r['inputs']  = json_decode( $r['inputs'], true ) ?: array();
+			$r['summary'] = json_decode( $r['summary'], true ) ?: array();
+		}
+		return $rows;
 	}
 
 	public static function set_nudge_opted_out( $user_id, $opted_out ) {
