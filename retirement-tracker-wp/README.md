@@ -32,8 +32,12 @@ Same behaviour as the Next.js app: one scenario per user, deterministic projecti
 
 | Shortcode | Description |
 |-----------|-------------|
-| `[retirement_tracker_dashboard]` | Shows “Your numbers” (pot at retirement, 67, 90, sustainability). Empty state links to the form page. |
-| `[retirement_tracker_form]` | Form to enter/update scenario; saves and recalculates. |
+| `[retirement_tracker_dashboard]` | Simple summary (pot at ret, 67, 90, sustainability). |
+| `[retirement_tracker_dashboard mode="full"]` | Full dashboard with drag-and-drop widgets, all inputs/outputs, year-by-year projection table. |
+| `[retirement_tracker_dashboard mode="full" dummy="1"]` | Same as full, but with sample data (for demo/feedback, works without login). |
+| `[retirement_tracker_form]` | Form to enter/update scenario; saves, recalculates, and redirects to dashboard if set. |
+
+Set both **Dashboard page** and **Update form page** in Settings → Retirement Tracker so the form redirects to the dashboard after save and links work correctly.
 
 ## Database
 

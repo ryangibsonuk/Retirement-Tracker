@@ -144,3 +144,101 @@
 .rt-message.rt-ok {
 	color: #059669;
 }
+
+/* Full dashboard */
+.rt-dashboard-full {
+	max-width: 64rem;
+	margin: 0 auto;
+}
+
+.rt-dummy-banner {
+	background: #fef3c7;
+	border: 1px solid #f59e0b;
+	border-radius: 0.5rem;
+	padding: 0.5rem 1rem;
+	margin-bottom: 1rem;
+}
+
+.rt-edit-link {
+	margin-bottom: 1.5rem;
+}
+
+.rt-widgets {
+	display: flex;
+	flex-direction: column;
+	gap: 1.5rem;
+}
+
+.rt-widget {
+	display: flex;
+	border: 1px solid #e5e7eb;
+	border-radius: 1rem;
+	background: #fff;
+	overflow: hidden;
+}
+
+.rt-widget-handle {
+	cursor: grab;
+	background: #f3f4f6;
+	padding: 1rem 0.5rem;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: #9ca3af;
+	font-size: 0.875rem;
+}
+
+.rt-widget-handle:active {
+	cursor: grabbing;
+}
+
+.rt-widget-body {
+	flex: 1;
+	padding: 1rem 1.5rem;
+}
+
+.rt-widget-title {
+	font-size: 1rem;
+	font-weight: 600;
+	margin: 0 0 0.75rem 0;
+}
+
+.rt-widget-content p {
+	margin: 0.25rem 0;
+}
+
+.rt-value-large {
+	font-size: 1.5rem;
+}
+
+.rt-projection-table-wrap {
+	overflow-x: auto;
+	max-height: 20rem;
+	overflow-y: auto;
+}
+
+.rt-projection-table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 0.875rem;
+}
+
+.rt-projection-table th,
+.rt-projection-table td {
+	padding: 0.5rem 0.75rem;
+	text-align: left;
+	border-bottom: 1px solid #e5e7eb;
+}
+
+.rt-projection-table th {
+	background: #f9fafb;
+	font-weight: 500;
+}
+
+.rt-fail-row {
+	background: #fef2f2;
+}
+
+.rt-empty .rt-muted {
+	margin-bottom: 1rem;
+}

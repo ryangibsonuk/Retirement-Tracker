@@ -26,6 +26,18 @@ add_action( 'init', function () {
 
 add_action( 'wp_scheduled_rt_nudge', array( 'RT_DB', 'cron_nudge' ) );
 
+add_action( 'wp_ajax_rt_save_widget_order', function () {
+	check_ajax_referer( 'rt_save_widget_order', 'nonce' );
+	if ( ! is_user_logged_in() ) {
+		wp_send_json_error();
+	}
+	$order = isset( $_POST['order'] ) ? json_decode( stripslashes( $_POST['order'] ), true ) : array();
+	if ( is_array( $order ) ) {
+		update_user_meta( get_current_user_id(), 'rt_dashboard_widget_order', wp_json_encode( $order ) );
+	}
+	wp_send_json_success();
+} );
+
 add_action( 'admin_menu', function () {
 	add_options_page(
 		'Retirement Tracker',
@@ -37,17 +49,16 @@ add_action( 'admin_menu', function () {
 } );
 
 add_action( 'admin_init', function () {
-	register_setting( RT_PLUGIN_SLUG, 'rt_form_page_id', array(
-		'type'              => 'integer',
-		'sanitize_callback'  => 'absint',
-	) );
+	register_setting( RT_PLUGIN_SLUG, 'rt_form_page_id', array( 'type' => 'integer', 'sanitize_callback' => 'absint' ) );
+	register_setting( RT_PLUGIN_SLUG, 'rt_dashboard_page_id', array( 'type' => 'integer', 'sanitize_callback' => 'absint' ) );
 } );
 
 function rt_render_options_page() {
 	if ( ! current_user_can( 'manage_options' ) ) {
 		return;
 	}
-	$form_page_id = (int) get_option( 'rt_form_page_id', 0 );
+	$form_page_id     = (int) get_option( 'rt_form_page_id', 0 );
+	$dashboard_page_id = (int) get_option( 'rt_dashboard_page_id', 0 );
 	?>
 	<div class="wrap">
 		<h1>Retirement Tracker</h1>
@@ -56,15 +67,30 @@ function rt_render_options_page() {
 			<?php settings_fields( RT_PLUGIN_SLUG ); ?>
 			<table class="form-table">
 				<tr>
+					<th scope="row"><label for="rt_dashboard_page_id"><?php esc_html_e( 'Dashboard page', 'retirement-tracker' ); ?></label></th>
+					<td>
+						<?php
+						wp_dropdown_pages( array(
+							'selected'         => $dashboard_page_id,
+							'name'             => 'rt_dashboard_page_id',
+							'id'               => 'rt_dashboard_page_id',
+							'show_option_none' => __( '— Select —', 'retirement-tracker' ),
+							'post_status'      => array( 'publish', 'draft', 'private' ),
+						) );
+						?>
+						<p class="description"><?php esc_html_e( 'Page with dashboard shortcode. Form redirects here after save.', 'retirement-tracker' ); ?></p>
+					</td>
+				</tr>
+				<tr>
 					<th scope="row"><label for="rt_form_page_id"><?php esc_html_e( 'Update form page', 'retirement-tracker' ); ?></label></th>
 					<td>
 						<?php
 						wp_dropdown_pages( array(
-							'selected'          => $form_page_id,
-							'name'              => 'rt_form_page_id',
-							'id'                => 'rt_form_page_id',
-							'show_option_none'  => __( '— Select —', 'retirement-tracker' ),
-							'post_status'       => array( 'publish', 'draft', 'private' ),
+							'selected'         => $form_page_id,
+							'name'             => 'rt_form_page_id',
+							'id'               => 'rt_form_page_id',
+							'show_option_none' => __( '— Select —', 'retirement-tracker' ),
+							'post_status'      => array( 'publish', 'draft', 'private' ),
 						) );
 						?>
 						<p class="description"><?php esc_html_e( 'Page that contains [retirement_tracker_form]. Used for “Add my numbers” and nudge email links.', 'retirement-tracker' ); ?></p>
@@ -77,7 +103,9 @@ function rt_render_options_page() {
 		<hr />
 		<h2><?php esc_html_e( 'Shortcodes', 'retirement-tracker' ); ?></h2>
 		<ul>
-			<li><code>[retirement_tracker_dashboard]</code> — <?php esc_html_e( 'Your numbers (requires logged-in user).', 'retirement-tracker' ); ?></li>
+			<li><code>[retirement_tracker_dashboard]</code> — <?php esc_html_e( 'Simple summary (pot at ret, 67, 90, sustainability).', 'retirement-tracker' ); ?></li>
+			<li><code>[retirement_tracker_dashboard mode="full"]</code> — <?php esc_html_e( 'Full dashboard with drag-and-drop widgets, all inputs/outputs, year-by-year table.', 'retirement-tracker' ); ?></li>
+			<li><code>[retirement_tracker_dashboard mode="full" dummy="1"]</code> — <?php esc_html_e( 'Full dashboard with sample data (for demo/feedback).', 'retirement-tracker' ); ?></li>
 			<li><code>[retirement_tracker_form]</code> — <?php esc_html_e( 'Update my numbers form.', 'retirement-tracker' ); ?></li>
 		</ul>
 		<p><?php esc_html_e( 'Create a page for the dashboard and one for the form (or combine). Protect with “logged in only” or a membership plugin if needed.', 'retirement-tracker' ); ?></p>
