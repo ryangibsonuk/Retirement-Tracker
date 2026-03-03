@@ -143,6 +143,11 @@
 	color: #065f46;
 }
 
+.rt-app-alert-info {
+	background: #dbeafe;
+	color: #1e40af;
+}
+
 .rt-app-progress {
 	background: var(--rt-card);
 	border-radius: 1rem;

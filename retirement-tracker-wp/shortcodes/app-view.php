@@ -1,7 +1,7 @@
 <?php
 /**
  * App view: full SaaS-style dashboard. Used by [retirement_tracker_app].
- * Vars: $dummy, $inputs, $summary, $years, $history, $suggestions, $updated, $prev_summary
+ * Vars: $dummy, $show_preload_banner, $inputs, $summary, $years, $history, $suggestions, $updated, $prev_summary
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -64,6 +64,9 @@ wp_localize_script( 'chartjs', 'rtAppChartData', array(
 	</header>
 
 	<main class="rt-app-main">
+		<?php if ( ! empty( $show_preload_banner ) ) : ?>
+			<div class="rt-app-alert rt-app-alert-info"><?php esc_html_e( 'Preloaded with sample data. Update with your own numbers to get personalised insights.', 'retirement-tracker' ); ?></div>
+		<?php endif; ?>
 		<?php if ( isset( $_GET['rt_saved'] ) && ! $dummy ) : ?>
 			<div class="rt-app-alert rt-app-alert-success"><?php esc_html_e( 'Your numbers have been updated.', 'retirement-tracker' ); ?></div>
 		<?php endif; ?>

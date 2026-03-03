@@ -23,6 +23,24 @@ class RT_Shortcodes {
 		return $id ? get_permalink( $id ) : '#';
 	}
 
+	/** Default/sample data preloaded when user has no saved scenario */
+	public static function get_default_inputs() {
+		return array(
+			'currentAge'        => 44,
+			'retirementAge'     => 58,
+			'lifeHorizon'       => 95,
+			'cash'              => 42000,
+			'isa'               => 185000,
+			'gia'               => 38000,
+			'pensionPot'         => 312000,
+			'statePensionAge'    => 67,
+			'statePensionAnnual' => 11500,
+			'annualSpending'     => 38000,
+			'realReturnPct'      => 0.042,
+			'realReturnCashPct'  => 0.012,
+		);
+	}
+
 	public static function dashboard( $atts ) {
 		$atts  = shortcode_atts( array( 'mode' => 'simple', 'dummy' => '0' ), $atts, 'retirement_tracker_dashboard' );
 		$dummy = $atts['dummy'] === '1' || $atts['dummy'] === 'yes' || isset( $_GET['rt_dummy'] );
@@ -40,20 +58,24 @@ class RT_Shortcodes {
 		$scenario = RT_DB::get_scenario();
 		$summary  = $scenario ? ( $scenario['summary'] ?? null ) : null;
 		$updated  = $scenario && ! empty( $scenario['updated_at'] ) ? $scenario['updated_at'] : null;
+		$is_preloaded = false;
+
+		if ( ! $summary ) {
+			$defaults = self::get_default_inputs();
+			$result   = RT_Projection::run( $defaults );
+			$summary  = $result['summary'];
+			$is_preloaded = true;
+		}
 
 		ob_start();
 		?>
 		<div class="rt-dashboard">
-			<?php if ( $updated ) : ?>
+			<?php if ( $is_preloaded ) : ?>
+				<p class="rt-preload-banner"><?php esc_html_e( 'Preloaded with sample data. Update with your own numbers.', 'retirement-tracker' ); ?></p>
+			<?php elseif ( $updated ) : ?>
 				<p class="rt-muted"><?php echo esc_html( sprintf( __( 'Last updated %s', 'retirement-tracker' ), date_i18n( get_option( 'date_format' ), strtotime( $updated ) ) ) ); ?></p>
 			<?php endif; ?>
-
-			<?php if ( ! $summary ) : ?>
-				<div class="rt-card rt-card-empty">
-					<p class="rt-muted"><?php esc_html_e( "You haven't entered your numbers yet.", 'retirement-tracker' ); ?></p>
-					<p><a href="<?php echo esc_url( self::get_form_url() ); ?>" class="rt-btn rt-btn-primary"><?php esc_html_e( 'Add my numbers', 'retirement-tracker' ); ?></a></p>
-				</div>
-			<?php else : ?>
+			<?php if ( $summary ) : ?>
 				<div class="rt-grid">
 					<div class="rt-card">
 						<p class="rt-label"><?php esc_html_e( 'Pot at retirement', 'retirement-tracker' ); ?></p>
@@ -82,7 +104,7 @@ class RT_Shortcodes {
 						</p>
 					</div>
 				</div>
-				<p><a href="<?php echo esc_url( self::get_form_url() ); ?>" class="rt-btn rt-btn-secondary"><?php esc_html_e( 'Update my numbers', 'retirement-tracker' ); ?></a></p>
+				<p><a href="<?php echo esc_url( self::get_form_url() ); ?>" class="rt-btn <?php echo $is_preloaded ? 'rt-btn-primary' : 'rt-btn-secondary'; ?>"><?php esc_html_e( 'Update my numbers', 'retirement-tracker' ); ?></a></p>
 			<?php endif; ?>
 		</div>
 		<?php
@@ -119,21 +141,21 @@ class RT_Shortcodes {
 			$updated  = null;
 		} else {
 			$scenario = RT_DB::get_scenario();
+			$is_preloaded = false;
 			if ( ! $scenario || empty( $scenario['summary'] ) ) {
-				ob_start();
-				?>
-				<div class="rt-dashboard-full rt-empty">
-					<p class="rt-muted"><?php esc_html_e( "You haven't entered your numbers yet.", 'retirement-tracker' ); ?></p>
-					<p><a href="<?php echo esc_url( self::get_form_url() ); ?>" class="rt-btn rt-btn-primary"><?php esc_html_e( 'Add my numbers', 'retirement-tracker' ); ?></a></p>
-				</div>
-				<?php
-				return ob_get_clean();
+				$inputs  = self::get_default_inputs();
+				$result  = RT_Projection::run( $inputs );
+				$summary = $result['summary'];
+				$years   = $result['years'];
+				$updated = null;
+				$is_preloaded = true;
+			} else {
+				$inputs  = $scenario['inputs'];
+				$summary = $scenario['summary'];
+				$updated = $scenario['updated_at'] ?? null;
+				$result  = RT_Projection::run( $inputs );
+				$years   = $result['years'];
 			}
-			$inputs  = $scenario['inputs'];
-			$summary = $scenario['summary'];
-			$updated = $scenario['updated_at'] ?? null;
-			$result  = RT_Projection::run( $inputs );
-			$years   = $result['years'];
 		}
 
 		$default_order = array( 'summary', 'pots_today', 'ages', 'pots', 'state', 'spending', 'projection' );
@@ -154,8 +176,8 @@ class RT_Shortcodes {
 			<?php if ( $updated ) : ?>
 				<p class="rt-muted"><?php echo esc_html( sprintf( __( 'Last updated %s', 'retirement-tracker' ), date_i18n( get_option( 'date_format' ), strtotime( $updated ) ) ) ); ?></p>
 			<?php endif; ?>
-			<?php if ( $dummy ) : ?>
-				<p class="rt-dummy-banner"><?php esc_html_e( 'Sample data — use for demo and feedback.', 'retirement-tracker' ); ?></p>
+			<?php if ( $dummy || ! empty( $is_preloaded ) ) : ?>
+				<p class="rt-dummy-banner"><?php esc_html_e( 'Preloaded with sample data. Update with your own numbers.', 'retirement-tracker' ); ?></p>
 			<?php endif; ?>
 			<?php if ( isset( $_GET['rt_saved'] ) ) : ?>
 				<p class="rt-message rt-ok"><?php esc_html_e( 'Saved. Your numbers have been updated.', 'retirement-tracker' ); ?></p>
@@ -307,20 +329,7 @@ class RT_Shortcodes {
 		}
 
 		if ( $dummy ) {
-			$dummy_inputs = array(
-				'currentAge'        => 44,
-				'retirementAge'     => 58,
-				'lifeHorizon'       => 95,
-				'cash'              => 42000,
-				'isa'               => 185000,
-				'gia'               => 38000,
-				'pensionPot'         => 312000,
-				'statePensionAge'    => 67,
-				'statePensionAnnual' => 11500,
-				'annualSpending'     => 38000,
-				'realReturnPct'      => 0.042,
-				'realReturnCashPct'  => 0.012,
-			);
+			$dummy_inputs = self::get_default_inputs();
 			$result  = RT_Projection::run( $dummy_inputs );
 			$inputs  = $dummy_inputs;
 			$summary = $result['summary'];
@@ -331,18 +340,30 @@ class RT_Shortcodes {
 			$suggestions  = RT_Suggestions::get( $inputs, $summary, $prev_summary );
 		} else {
 			$scenario = RT_DB::get_scenario();
+			$is_preloaded = false;
 			if ( ! $scenario || empty( $scenario['summary'] ) ) {
-				return self::app_empty();
+				$inputs   = self::get_default_inputs();
+				$result   = RT_Projection::run( $inputs );
+				$summary  = $result['summary'];
+				$years    = $result['years'];
+				$updated  = null;
+				$history  = self::dummy_history( $inputs );
+				$prev_summary = count( $history ) >= 2 ? $history[ count( $history ) - 2 ]['summary'] : null;
+				$suggestions  = RT_Suggestions::get( $inputs, $summary, $prev_summary );
+				$is_preloaded = true;
+			} else {
+				$inputs   = $scenario['inputs'];
+				$summary  = $scenario['summary'];
+				$updated  = $scenario['updated_at'] ?? null;
+				$result   = RT_Projection::run( $inputs );
+				$years    = $result['years'];
+				$history  = RT_DB::get_scenario_history( get_current_user_id(), 24 );
+				$prev_summary = count( $history ) >= 2 ? $history[ count( $history ) - 2 ]['summary'] : null;
+				$suggestions  = RT_Suggestions::get( $inputs, $summary, $prev_summary );
 			}
-			$inputs   = $scenario['inputs'];
-			$summary  = $scenario['summary'];
-			$updated  = $scenario['updated_at'] ?? null;
-			$result   = RT_Projection::run( $inputs );
-			$years    = $result['years'];
-			$history  = RT_DB::get_scenario_history( get_current_user_id(), 24 );
-			$prev_summary = count( $history ) >= 2 ? $history[ count( $history ) - 2 ]['summary'] : null;
-			$suggestions  = RT_Suggestions::get( $inputs, $summary, $prev_summary );
 		}
+
+		$show_preload_banner = $dummy || ( $is_preloaded ?? false );
 
 		ob_start();
 		include __DIR__ . '/app-view.php';
@@ -429,22 +450,8 @@ class RT_Shortcodes {
 		}
 
 		$scenario = RT_DB::get_scenario();
-		$inputs   = $scenario ? ( $scenario['inputs'] ?? array() ) : array();
-		$defaults = array(
-			'currentAge'        => 40,
-			'retirementAge'     => 65,
-			'lifeHorizon'       => 95,
-			'cash'              => 0,
-			'isa'               => 0,
-			'gia'               => 0,
-			'pensionPot'         => 0,
-			'statePensionAge'    => 67,
-			'statePensionAnnual' => 0,
-			'annualSpending'     => 30000,
-			'realReturnPct'      => 0.04,
-			'realReturnCashPct'  => 0.01,
-		);
-		$inputs = array_merge( $defaults, $inputs );
+		$defaults = self::get_default_inputs();
+		$inputs   = $scenario && ! empty( $scenario['inputs'] ) ? array_merge( $defaults, $scenario['inputs'] ) : $defaults;
 
 		$message = '';
 		if ( isset( $_POST['rt_save_scenario'] ) && wp_verify_nonce( $_POST['rt_nonce'] ?? '', 'rt_save_scenario' ) ) {

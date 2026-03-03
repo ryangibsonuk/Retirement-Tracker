@@ -32,12 +32,12 @@ Same behaviour as the Next.js app: one scenario per user, deterministic projecti
 
 | Shortcode | Description |
 |-----------|-------------|
-| `[retirement_tracker_dashboard]` | Simple summary (pot at ret, 67, 90, sustainability). |
-| `[retirement_tracker_dashboard mode="full"]` | Full dashboard with drag-and-drop widgets, all inputs/outputs, year-by-year projection table. |
-| `[retirement_tracker_dashboard mode="full" dummy="1"]` | Same as full, but with sample data (for demo/feedback, works without login). |
-| `[retirement_tracker_form]` | Form to enter/update scenario; saves, recalculates, and redirects to dashboard if set. |
+| **`[retirement_tracker_app]`** | **Main app.** When logged out: landing with "Log in to your dashboard" and "View demo". When logged in: full SaaS-style dashboard (hero numbers, charts, progress, suggestions, monthly reminder). Add `?rt_dummy=1` for demo with sample data. |
+| `[retirement_tracker_dashboard]` | Simple summary. |
+| `[retirement_tracker_dashboard mode="full"]` | Drag-and-drop widgets. |
+| `[retirement_tracker_form]` | Update-my-numbers form (requires login). Saves and redirects to dashboard. |
 
-Set both **Dashboard page** and **Update form page** in Settings → Retirement Tracker so the form redirects to the dashboard after save and links work correctly.
+**Flow:** Create one page with `[retirement_tracker_app]` (e.g. `/retirement` or home). Create another with `[retirement_tracker_form]`. In Settings → Retirement Tracker, set **Dashboard page** = the app page, **Update form page** = the form page. Users log in → see their dashboard → click "Update my numbers" → fill form → save → return to dashboard. Progress and charts build up over time as they update.
 
 ## Database
 
