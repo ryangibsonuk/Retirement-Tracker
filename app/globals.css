@@ -1,0 +1,20 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --calc-bg: #fef7ff;
+  --calc-card: #ffffff;
+  --calc-border: #e9d5ff;
+  --calc-text: #0f172a;
+  --calc-muted: #475569;
+  --calc-primary: #9333ea;
+  --calc-primary-hover: #7e22ce;
+  --calc-success: #16a34a;
+  --calc-soft: #f3e8ff;
+}
+
+body {
+  color: var(--calc-text);
+  background: var(--calc-bg);
+}
