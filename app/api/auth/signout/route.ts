@@ -1,6 +1,8 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse } from "next/server";
 
+type CookieToSet = { name: string; value: string; options?: Record<string, unknown> };
+
 export async function POST(request: Request) {
   const origin = request.headers.get("origin") ?? new URL(request.url).origin;
   const response = NextResponse.redirect(`${origin}/`);
@@ -20,7 +22,7 @@ export async function POST(request: Request) {
             return { name, value };
           });
         },
-        setAll(cookiesToSet: { name: string; value: string; options?: Record<string, unknown> }[]) {
+        setAll(cookiesToSet: CookieToSet[]) {
           cookiesToSet.forEach(({ name, value, options }) =>
             response.cookies.set(name, value, options)
           );
