@@ -132,10 +132,10 @@ document.addEventListener('DOMContentLoaded', function() {
 				</div>
 			</section>
 
-			<!-- Spending & returns -->
+			<!-- Spending & withdrawals -->
 			<section class="rt-form-section">
-				<h2 class="rt-form-section-title"><?php esc_html_e( 'Spending & assumptions', 'retirement-tracker' ); ?></h2>
-				<p class="rt-form-hint"><?php esc_html_e( 'Annual spending in retirement and real return assumptions (after inflation).', 'retirement-tracker' ); ?></p>
+				<h2 class="rt-form-section-title"><?php esc_html_e( 'Spending & withdrawals', 'retirement-tracker' ); ?></h2>
+				<p class="rt-form-hint"><?php esc_html_e( 'This is what you plan to spend each year in retirement (today\'s money).', 'retirement-tracker' ); ?></p>
 				<div class="rt-form-row rt-form-row-3">
 					<div class="rt-form-field">
 						<label for="rt_spending"><?php esc_html_e( 'Annual spending in retirement (£)', 'retirement-tracker' ); ?></label>

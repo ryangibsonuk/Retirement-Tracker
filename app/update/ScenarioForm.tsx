@@ -210,8 +210,11 @@ export function ScenarioForm({
 
       <section className="rounded-2xl border border-[var(--calc-border)] bg-[var(--calc-card)] p-6">
         <h2 className="text-lg font-semibold text-[var(--calc-text)] mb-4">
-          Spending & returns
+          Spending & withdrawals
         </h2>
+        <p className="text-sm text-[var(--calc-muted)] mb-4">
+          This is what you plan to spend each year in retirement (today's money).
+        </p>
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
             <label className="block text-sm font-medium text-[var(--calc-muted)] mb-1">
