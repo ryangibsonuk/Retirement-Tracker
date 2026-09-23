@@ -13,7 +13,7 @@ const defaultInputs: ScenarioInput = {
   gia: 0,
   pensionPot: 0,
   statePensionAge: 67,
-  statePensionAnnual: 0,
+  statePensionAnnual: 12548,
   annualSpending: 30000,
   realReturnPct: 0.04,
   realReturnCashPct: 0.01,
@@ -48,10 +48,14 @@ export function ScenarioForm({
   );
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<{ type: "ok" | "err"; text: string } | null>(null);
+  const [ageConfirmed, setAgeConfirmed] = useState<boolean>(
+    () => initialInputs && Object.keys(initialInputs).length > 0
+  );
 
   useEffect(() => {
     if (initialInputs && Object.keys(initialInputs).length > 0) {
       setInputs((prev) => ({ ...prev, ...initialInputs } as ScenarioInput));
+      setAgeConfirmed(true);
     }
   }, [initialInputs]);
 
@@ -94,9 +98,17 @@ export function ScenarioForm({
               min={18}
               max={100}
               value={inputs.currentAge}
-              onChange={(e) => update("currentAge", parseInt(e.target.value, 10) || 0)}
+              onChange={(e) => {
+                update("currentAge", parseInt(e.target.value, 10) || 0);
+                setAgeConfirmed(true);
+              }}
               className="w-full rounded-xl border border-[var(--calc-border)] px-4 py-2 bg-white"
             />
+            {!ageConfirmed && (
+              <p className="text-sm text-[var(--calc-muted)] mt-1">
+                Check your age. Charts use this.
+              </p>
+            )}
           </div>
           <div>
             <label className="block text-sm font-medium text-[var(--calc-muted)] mb-1">
@@ -189,12 +201,20 @@ export function ScenarioForm({
             />
           </div>
         </div>
+        {inputs.statePensionAnnual > 0 && (
+          <p className="text-sm text-[var(--calc-muted)] mt-3">
+            Using the full new State Pension. Change this if your forecast differs.
+          </p>
+        )}
       </section>
 
       <section className="rounded-2xl border border-[var(--calc-border)] bg-[var(--calc-card)] p-6">
         <h2 className="text-lg font-semibold text-[var(--calc-text)] mb-4">
-          Spending & returns
+          Spending & withdrawals
         </h2>
+        <p className="text-sm text-[var(--calc-muted)] mb-4">
+          This is what you plan to spend each year in retirement (today's money).
+        </p>
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
             <label className="block text-sm font-medium text-[var(--calc-muted)] mb-1">

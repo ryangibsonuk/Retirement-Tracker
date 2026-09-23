@@ -8,10 +8,23 @@ defined( 'ABSPATH' ) || exit;
 wp_enqueue_style( 'rt-shortcodes', plugin_dir_url( dirname( __FILE__ ) ) . 'assets/rt-shortcodes.css', array(), RT_VERSION );
 wp_enqueue_style( 'rt-form', plugin_dir_url( dirname( __FILE__ ) ) . 'assets/rt-form.css', array( 'rt-shortcodes' ), RT_VERSION );
 wp_enqueue_script( 'sortablejs', 'https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js', array(), '1.15.0', true );
+$has_saved_data = ! empty( $inputs ) && isset( $inputs['currentAge'] );
+wp_localize_script( 'sortablejs', 'rtFormData', array( 'hasSavedData' => $has_saved_data ) );
 wp_add_inline_script( 'sortablejs', "
 document.addEventListener('DOMContentLoaded', function() {
 	var el = document.getElementById('rt-form-blocks');
 	if (el) new Sortable(el, { handle: '.rt-form-block-handle', animation: 150 });
+	
+	var hasSavedData = typeof rtFormData !== 'undefined' && rtFormData.hasSavedData;
+	var ageInput = document.getElementById('rt_current_age');
+	var ageNudge = document.getElementById('rt_age_nudge');
+	if (ageInput && ageNudge && !hasSavedData) {
+		ageInput.addEventListener('input', function() {
+			ageNudge.style.display = 'none';
+		});
+	} else if (ageNudge && hasSavedData) {
+		ageNudge.style.display = 'none';
+	}
 });
 ", 'after' );
 ?>
@@ -40,7 +53,8 @@ document.addEventListener('DOMContentLoaded', function() {
 				<div class="rt-form-row rt-form-row-3">
 					<div class="rt-form-field">
 						<label for="rt_current_age"><?php esc_html_e( 'Current age', 'retirement-tracker' ); ?></label>
-						<input type="number" id="rt_current_age" name="rt_current_age" min="18" max="100" value="<?php echo esc_attr( $inputs['currentAge'] ?? 44 ); ?>" />
+						<input type="number" id="rt_current_age" name="rt_current_age" min="18" max="100" value="<?php echo esc_attr( $inputs['currentAge'] ?? 40 ); ?>" />
+						<p id="rt_age_nudge" class="rt-form-hint" style="margin-top: 0.5rem;"><?php esc_html_e( 'Check your age. Charts use this.', 'retirement-tracker' ); ?></p>
 					</div>
 					<div class="rt-form-field">
 						<label for="rt_retirement_age"><?php esc_html_e( 'Retirement age', 'retirement-tracker' ); ?></label>
@@ -100,6 +114,9 @@ document.addEventListener('DOMContentLoaded', function() {
 												echo '<div class="rt-form-field"><label for="' . esc_attr( $name ) . '">' . esc_html( $lbl ) . '</label><input type="text" id="' . esc_attr( $name ) . '" name="' . esc_attr( $name ) . '" inputmode="decimal" value="' . esc_attr( $val == 0 ? '' : (int) $val ) . '" placeholder="0" /></div>';
 											}
 										}
+										if ( $b['id'] === 'state' && ! empty( $inputs['statePensionAnnual'] ) && $inputs['statePensionAnnual'] > 0 ) {
+											echo '<p class="rt-form-hint" style="margin-top: 0.5rem;">' . esc_html__( 'Using the full new State Pension. Change this if your forecast differs.', 'retirement-tracker' ) . '</p>';
+										}
 									} else {
 										$val = $inputs[ $b['key'] ] ?? 0;
 										if ( $b['id'] === 'dc' ) $val = $dc;
@@ -115,10 +132,10 @@ document.addEventListener('DOMContentLoaded', function() {
 				</div>
 			</section>
 
-			<!-- Spending & returns -->
+			<!-- Spending & withdrawals -->
 			<section class="rt-form-section">
-				<h2 class="rt-form-section-title"><?php esc_html_e( 'Spending & assumptions', 'retirement-tracker' ); ?></h2>
-				<p class="rt-form-hint"><?php esc_html_e( 'Annual spending in retirement and real return assumptions (after inflation).', 'retirement-tracker' ); ?></p>
+				<h2 class="rt-form-section-title"><?php esc_html_e( 'Spending & withdrawals', 'retirement-tracker' ); ?></h2>
+				<p class="rt-form-hint"><?php esc_html_e( 'This is what you plan to spend each year in retirement (today\'s money).', 'retirement-tracker' ); ?></p>
 				<div class="rt-form-row rt-form-row-3">
 					<div class="rt-form-field">
 						<label for="rt_spending"><?php esc_html_e( 'Annual spending in retirement (£)', 'retirement-tracker' ); ?></label>
