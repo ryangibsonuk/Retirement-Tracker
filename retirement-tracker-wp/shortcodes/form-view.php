@@ -100,6 +100,9 @@ document.addEventListener('DOMContentLoaded', function() {
 												echo '<div class="rt-form-field"><label for="' . esc_attr( $name ) . '">' . esc_html( $lbl ) . '</label><input type="text" id="' . esc_attr( $name ) . '" name="' . esc_attr( $name ) . '" inputmode="decimal" value="' . esc_attr( $val == 0 ? '' : (int) $val ) . '" placeholder="0" /></div>';
 											}
 										}
+										if ( $b['id'] === 'state' && ! empty( $inputs['statePensionAnnual'] ) && $inputs['statePensionAnnual'] > 0 ) {
+											echo '<p class="rt-form-hint" style="margin-top: 0.5rem;">' . esc_html__( 'Using the full new State Pension. Change this if your forecast differs.', 'retirement-tracker' ) . '</p>';
+										}
 									} else {
 										$val = $inputs[ $b['key'] ] ?? 0;
 										if ( $b['id'] === 'dc' ) $val = $dc;

@@ -13,7 +13,7 @@ const defaultInputs: ScenarioInput = {
   gia: 0,
   pensionPot: 0,
   statePensionAge: 67,
-  statePensionAnnual: 0,
+  statePensionAnnual: 12548,
   annualSpending: 30000,
   realReturnPct: 0.04,
   realReturnCashPct: 0.01,
@@ -189,6 +189,11 @@ export function ScenarioForm({
             />
           </div>
         </div>
+        {inputs.statePensionAnnual > 0 && (
+          <p className="text-sm text-[var(--calc-muted)] mt-3">
+            Using the full new State Pension. Change this if your forecast differs.
+          </p>
+        )}
       </section>
 
       <section className="rounded-2xl border border-[var(--calc-border)] bg-[var(--calc-card)] p-6">
