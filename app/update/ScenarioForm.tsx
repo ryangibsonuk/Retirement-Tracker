@@ -48,10 +48,14 @@ export function ScenarioForm({
   );
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<{ type: "ok" | "err"; text: string } | null>(null);
+  const [ageConfirmed, setAgeConfirmed] = useState<boolean>(
+    () => initialInputs && Object.keys(initialInputs).length > 0
+  );
 
   useEffect(() => {
     if (initialInputs && Object.keys(initialInputs).length > 0) {
       setInputs((prev) => ({ ...prev, ...initialInputs } as ScenarioInput));
+      setAgeConfirmed(true);
     }
   }, [initialInputs]);
 
@@ -94,9 +98,17 @@ export function ScenarioForm({
               min={18}
               max={100}
               value={inputs.currentAge}
-              onChange={(e) => update("currentAge", parseInt(e.target.value, 10) || 0)}
+              onChange={(e) => {
+                update("currentAge", parseInt(e.target.value, 10) || 0);
+                setAgeConfirmed(true);
+              }}
               className="w-full rounded-xl border border-[var(--calc-border)] px-4 py-2 bg-white"
             />
+            {!ageConfirmed && (
+              <p className="text-sm text-[var(--calc-muted)] mt-1">
+                Check your age. Charts use this.
+              </p>
+            )}
           </div>
           <div>
             <label className="block text-sm font-medium text-[var(--calc-muted)] mb-1">
